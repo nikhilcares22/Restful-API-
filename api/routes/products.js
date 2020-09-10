@@ -3,19 +3,30 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Product = require('../models/product');
 const { update } = require("../models/product");
+const { response } = require("../../app");
 
 router.get('/', (req, res, next) => {
     Product.find()
+        .select('name price _id') //used to display selective methods
         .exec()
         .then(docs => {
-            console.log(docs);
-            if (docs.length > 0) {
-                res.status(200).json(docs);
-            } else {
-                res.status(200).json({
-                    message: "no entries found"
+            const response = {
+                count: docs.length,
+                products: docs.map(doc => {
+                    // console.log(doc);
+                    return {
+                        name: doc.name,
+                        price: doc.price,
+                        _id: doc._id,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/products/' + doc._id
+                        }
+                    }
                 })
             }
+            res.status(200).json(response);
+
         })
         .catch(err => {
             console.log(err);
@@ -37,8 +48,16 @@ router.post('/', (req, res, next) => {
     product.save().then(result => {
         console.log(result);
         res.status(201).json({
-            message: 'handling POST request to /products',
-            createdProduct: product
+            message: 'Created product successfully ',
+            createdProduct: {
+                name: result.name,
+                price: result.price,
+                _id: result._id,
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/products/' + result._id
+                }
+            }
         });
     }).catch(err => {
         console.log(err)
@@ -53,11 +72,19 @@ router.post('/', (req, res, next) => {
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId;
     Product.findById(id)
+        .select('name price _id')
         .exec()
         .then(doc => {
             console.log("from database ", doc);
             if (doc) {
-                res.status(200).json(doc);
+                res.status(200).json({
+                    product: doc,
+                    resquest: {
+                        type: 'GET',
+                        description: 'GET all products',
+                        url: 'http://localhost/products'
+                    }
+                });
             } else {
                 res.status(404).json({
                     message: 'no valid entry'
@@ -84,7 +111,13 @@ router.patch('/:productId', (req, res, next) => {
         .exec()
         .then(result => {
             console.log(result);
-            res.status(200).json(result);
+            res.status(200).json({
+                message: "product updated",
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/products/' + id
+                }
+            });
         })
         .catch(error => {
             console.log(error);
@@ -99,7 +132,17 @@ router.delete('/:productId', (req, res, next) => {
     Product.remove({ _id: id })
         .exec()
         .then(result => {
-            res.status(200).json(result);
+            res.status(200).json({
+                message: 'product deleted',
+                request: {
+                    type: 'POST',
+                    url: 'http:localhost:3000/products',
+                    body: {
+                        name: 'string',
+                        price: 'number'
+                    }
+                }
+            });
         })
         .catch(error => {
             console.log(error);

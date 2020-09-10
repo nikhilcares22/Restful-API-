@@ -11,6 +11,7 @@ mongoose.connect('mongodb+srv://db:' + process.env.MONGO_ATLAS_PW + '@cluster0.h
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
+mongoose.promise = global.Promise;
 
 //morgan used for logging the requests
 app.use(morgan('dev'));
