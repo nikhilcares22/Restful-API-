@@ -7,10 +7,7 @@ const mongoose = require('mongoose');
 const productRoutes = require('./api/routes/products');
 const ordersRoutes = require('./api/routes/orders');
 
-mongoose.connect('mongodb+srv://db:' + process.env.MONGO_ATLAS_PW + '@cluster0.hfwn7.mongodb.net/<dbname>?retryWrites=true&w=majority', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+mongoose.connect('mongodb://localhost:27017/newData', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.promise = global.Promise;
 
 //morgan used for logging the requests
