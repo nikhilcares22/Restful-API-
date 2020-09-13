@@ -12,6 +12,7 @@ mongoose.promise = global.Promise;
 
 //morgan used for logging the requests
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
