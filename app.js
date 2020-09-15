@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const productRoutes = require('./api/routes/products');
-const ordersRoutes = require('./api/routes/orders');
+const orderRoutes = require('./api/routes/orders');
+const userRoutes = require('./api/routes/user');
 
 mongoose.connect('mongodb://localhost:27017/newData', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.promise = global.Promise;
@@ -28,7 +29,8 @@ app.use((req, res, next) => {
 
 //routes which should handle requests
 app.use('/products', productRoutes);
-app.use('/orders', ordersRoutes);
+app.use('/orders', orderRoutes);
+app.use('/user', userRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('not found');
