@@ -52,8 +52,8 @@ router.post('/login', (req, res, next) => {
     User.find({ email: req.body.email })
         .exec()
         .then(user => {
-            if (user.length > 1) {
-                return res.status(404).json({
+            if (user.length < 1) {
+                return res.status(401).json({
                     message: 'Auth failed'
                 });
             }
